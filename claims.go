@@ -23,6 +23,41 @@ type StandardClaims struct {
 	Subject   string       `json:"sub,omitempty"`
 }
 
+type SingleAudClaims struct {
+	Audience  string `json:"aud,omitempty"`
+	ExpiresAt *Time        `json:"exp,omitempty"`
+	ID        string       `json:"jti,omitempty"`
+	IssuedAt  *Time        `json:"iat,omitempty"`
+	Issuer    string       `json:"iss,omitempty"`
+	NotBefore *Time        `json:"nbf,omitempty"`
+	Subject   string       `json:"sub,omitempty"`
+}
+
+func (c *StandardClaims) singleAud() SingleAudClaims {
+	return SingleAudClaims{
+		c.Audience[0],
+		c.ExpiresAt,
+		c.ID,
+		c.IssuedAt,
+		c.Issuer,
+		c.NotBefore,
+		c.Subject,
+	}
+}
+
+func (c *SingleAudClaims) standard() StandardClaims {
+	return StandardClaims{
+		ClaimStrings{c.Audience},
+		c.ExpiresAt,
+		c.ID,
+		c.IssuedAt,
+		c.Issuer,
+		c.NotBefore,
+		c.Subject,
+	}
+}
+
+
 // Valid validates standard claims using ValidationHelper
 // Validates time based claims "exp, nbf" (see: WithLeeway)
 // Validates "aud" if present in claims. (see: WithAudience, WithoutAudienceValidation)
@@ -51,6 +86,10 @@ func (c StandardClaims) Valid(h *ValidationHelper) error {
 	}
 
 	return vErr
+}
+
+func (c SingleAudClaims) Valid(h *ValidationHelper) error {
+	return c.standard().Valid(h)
 }
 
 // VerifyAudience compares the aud claim against cmp.
