@@ -1,4 +1,4 @@
-module github.com/dgrijalva/jwt-go/v4
+module github.com/cenkbilgen/jwt-go/v4
 
 go 1.12
 
