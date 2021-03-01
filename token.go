@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 	"strings"
 	"time"
+	"log"
 )
 
 // TimeFunc provides the current time when parsing token to validate "exp" claim (expiration time).
@@ -52,6 +53,7 @@ func (t *Token) SignedString(key interface{}, opts ...SigningOption) (string, er
 	if sstr, err = t.SigningString(opts...); err != nil {
 		return "", err
 	}
+	log.Printf("text: %v\n", sstr)
 	if sig, err = t.Method.Sign(sstr, key); err != nil {
 		return "", err
 	}
