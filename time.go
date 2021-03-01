@@ -73,6 +73,9 @@ func (t *Time) UnmarshalJSON(data []byte) error {
 
 // MarshalJSON implements the json package's Marshaler interface
 func (t *Time) MarshalJSON() ([]byte, error) {
-	f := float64(t.Truncate(TimePrecision).UnixNano()) / float64(time.Second)
-	return json.Marshal(f)
+	//f := float64(t.Truncate(TimePrecision).UnixNano()) / float64(time.Second)
+	//return json.Marshal(f)
+	v := t.Unix()
+	return json.Marshal(v)
 }
+
